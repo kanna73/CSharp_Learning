@@ -1,0 +1,6 @@
+@ADO_Practice_HostAddress = http://localhost:5160
+
+GET {{ADO_Practice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
