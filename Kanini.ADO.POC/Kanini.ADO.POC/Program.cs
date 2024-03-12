@@ -1,9 +1,17 @@
 using DataLayer.Interface;
-using DataLayer.Repostiory;
-using Mapper.Interface;
+using Kanini.Poc.Ado.Constants.Constants;
+using Kanini.Poc.Ado.DataAccess.Repostiory;
+using Kanini.Poc.Ado.Domain.Interface.Constants;
+using Kanini.Poc.Ado.Domain.Interface.MapperInterface;
+using Kanini.Poc.Ado.Domain.Interface.RepostioryInterface;
+using Kanini.Poc.Ado.Domain.Interface.ServiceInterface;
+using Kanini.Poc.Ado.Domain.Interface.UspRepostiory;
+using Kanini.Poc.Ado.Domain.Interface.UspService;
+using Kanini.Poc.Ado.Service.Service;
+using Kanini.Poc.Ado.Service.UspService;
+using Kanini.Poc.Ado.UspDataAccess.Interface;
+using Kanini.Poc.Ado.UspDataAccess.Repostiory;
 using Mapper.Mapper;
-using ServiceLayer.Interface;
-using ServiceLayer.Service;
 
 namespace Kanini.ADO.POC
 {
@@ -20,8 +28,11 @@ namespace Kanini.ADO.POC
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             builder.Services.AddScoped<IServiceMapper, ServiceMapper>();
-            builder.Services.AddScoped<IConnection, Connection>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddSingleton<IConnection, Connection>();
+            builder.Services.AddScoped<IEmployeeUspService, EmployeeUspService>();
+            builder.Services.AddScoped<IUspEmployeeRepo, UspEmployeeRepo>();
+            builder.Services.AddSingleton<IUspConnection, UspConnection>();
+            builder.Services.AddSingleton<IMessage, Messages>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

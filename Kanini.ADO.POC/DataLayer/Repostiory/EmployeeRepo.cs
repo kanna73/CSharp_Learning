@@ -1,15 +1,12 @@
 ﻿using DataLayer.Interface;
+using Kanini.Poc.Ado.Domain.Interface.RepostioryInterface;
 using Microsoft.Data.SqlClient;
 using Model.Entity;
 using Model.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DataLayer.Repostiory
+namespace Kanini.Poc.Ado.DataAccess.Repostiory
 {
     public class EmployeeRepo : IEmployeeRepo
     {
@@ -20,117 +17,113 @@ namespace DataLayer.Repostiory
             _connection = connection;
         }
 
-        public List<Employee> GetAllEmployee()
+
+
+        public IEnumerable<Employee> GetAllEmployee()
         {
             List<Employee> list = new List<Employee>();
-            using (SqlConnection connection = _connection.GetConnection())
+
+            using (SqlCommand cmd = new SqlCommand("select * from Employee", _connection.GetConnection()))
             {
-                using (SqlCommand cmd = new SqlCommand("select * from Employee", connection))
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+
                 {
-                    connection.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            Employee emp = new Employee();
-                            emp.Id = reader.GetInt32("Id");
-                            emp.EmployeeName = reader.GetString("EmployeeName");
-                            emp.EmployeeCode = reader.GetString("EmployeeCode");
-                            emp.DeptID = reader.GetInt32("DeptID");
-                            list.Add(emp);
-                        }
+                        Employee emp = new Employee();
+                        emp.Id = reader.GetInt32("Id");
+                        emp.EmployeeName = reader.GetString("EmployeeName");
+                        emp.EmployeeCode = reader.GetString("EmployeeCode");
+                        emp.DeptID = reader.GetInt32("DeptID");
+                        list.Add(emp);
                     }
                 }
             }
+
             return list;
         }
 
-        public string AddEmployee(Employee emp)
+        public IEnumerable<int> AddEmployee(Employee emp)
         {
-            using(SqlConnection connection = _connection.GetConnection())
+
+            string query = "insert into Employee (EmployeeName,EmployeeCode,DeptID) values(@EmployeeName,@EmployeeCode,@DeptID)";
+            using (SqlCommand cmd = new SqlCommand(query, _connection.GetConnection()))
             {
-                string query = "insert into Employee (EmployeeName,EmployeeCode,DeptID) values(@EmployeeName,@EmployeeCode,@DeptID)";
-                using (SqlCommand cmd = new SqlCommand(query,connection))
-                {
-                    cmd.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
-                    cmd.Parameters.AddWithValue("@EmployeeCode", emp.EmployeeCode);
-                    cmd.Parameters.AddWithValue("@DeptID", emp.DeptID);
-                    connection.Open();
-                    int row = cmd.ExecuteNonQuery();
-                    return row == 1 ? "Employee added successfully" : "Error Occured";
-                }
+                cmd.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
+                cmd.Parameters.AddWithValue("@EmployeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@DeptID", emp.DeptID);
+                cmd.Connection.Open();
+                int row = cmd.ExecuteNonQuery();
+                yield return row;
             }
+
         }
 
-        public string UpdateEmployee(Employee emp)
+        public IEnumerable<int> UpdateEmployee(Employee emp)
         {
-            using( SqlConnection connection = _connection.GetConnection())
+
+            string query = "update  Employee Set EmployeeName=@EmployeeName, EmployeeCode=@EmployeeCode,DeptID=@DeptID where Id=@Id";
+
+            using (SqlCommand cmd = new SqlCommand(query, _connection.GetConnection()))
             {
-                string query = "update  Employee Set EmployeeName=@EmployeeName, EmployeeCode=@EmployeeCode,DeptID=@DeptID where Id=@Id";
-
-                using(SqlCommand cmd = new SqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
-                    cmd.Parameters.AddWithValue("@EmployeeCode", emp.EmployeeCode);
-                    cmd.Parameters.AddWithValue("@DeptID", emp.DeptID);
-                    cmd.Parameters.AddWithValue("@Id", emp.Id);
-                    connection.Open();
-                    int row = cmd.ExecuteNonQuery();
-                    return row == 1 ? "Updated successfully" : "Error occured";
-                }
-
+                cmd.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
+                cmd.Parameters.AddWithValue("@EmployeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@DeptID", emp.DeptID);
+                cmd.Parameters.AddWithValue("@Id", emp.Id);
+                cmd.Connection.Open();
+                int row = cmd.ExecuteNonQuery();
+                yield return row;
             }
+
+
         }
 
-        public string DeleteEmployee(int id)
+        public IEnumerable<int> DeleteEmployee(int id)
         {
-            using(SqlConnection connection = _connection.GetConnection())
+            string query = "delet from Employee where Id=@Id";
+            using (SqlCommand cmd = new SqlCommand(query, _connection.GetConnection()))
             {
-                string query = "delet from Employee where Id=@Id";
-                using( SqlCommand cmd = new SqlCommand(query,connection))
-                {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    connection.Open();
-                    int row = cmd.ExecuteNonQuery();
-                    return row == 1 ? "Deleted successfully" : "Error Occured";
-                }
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Connection.Open();
+                int row = cmd.ExecuteNonQuery();
+                yield return row;
             }
+
         }
 
-        public int GetEmployeeCount()
+        public IEnumerable<int> GetEmployeeCount()
         {
-            using(SqlConnection connection = _connection.GetConnection())
+
+            string query = "Select Count(*) as Total from Employee";
+            using (SqlCommand cmd = new SqlCommand(query, _connection.GetConnection()))
             {
-                string query = "Select Count(*) as Total from Employee";
-                using(SqlCommand command = new SqlCommand(query, connection))
-                {
-                    connection.Open();
-                    int total = Convert.ToInt32(command.ExecuteScalar());
-                    return total;
-                }
+                cmd.Connection.Open();
+                int total = Convert.ToInt32(cmd.ExecuteScalar());
+                yield return total;
             }
+
         }
 
-        public List<EmployeeWithDepartment> GetAllEmployeeWithDepartment()
+        public IEnumerable<EmployeeWithDepartment> GetAllEmployeeWithDepartment()
         {
-            List<EmployeeWithDepartment> list = new List<EmployeeWithDepartment>();   
-            using (SqlConnection connection = _connection.GetConnection())
+            List<EmployeeWithDepartment> list = new List<EmployeeWithDepartment>();
+
+            using (SqlCommand cmd = new SqlCommand("Exec USPGetEmployeeWithDepartment", _connection.GetConnection()))
             {
-                using(SqlCommand cmd = new SqlCommand("Exec USPGetEmployeeWithDepartment",connection))
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    connection.Open();
-                    using(SqlDataReader  reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            EmployeeWithDepartment employee = new EmployeeWithDepartment();
-                            employee.EmployeeName = reader.GetString("EmployeeName");
-                            employee.EmployeeCode = reader.GetString("EmployeeCode");
-                            employee.DepartmentName = reader.GetString("DepartmentName");
-                            list.Add(employee);
-                        }
+                        EmployeeWithDepartment employee = new EmployeeWithDepartment();
+                        employee.EmployeeName = reader.GetString("EmployeeName");
+                        employee.EmployeeCode = reader.GetString("EmployeeCode");
+                        employee.DepartmentName = reader.GetString("DepartmentName");
+                        list.Add(employee);
                     }
                 }
+
             }
             return list;
 

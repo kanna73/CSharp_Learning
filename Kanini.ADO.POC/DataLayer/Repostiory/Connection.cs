@@ -1,18 +1,19 @@
 ﻿using DataLayer.Interface;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
-namespace DataLayer.Repostiory
+namespace Kanini.Poc.Ado.DataAccess.Repostiory
 {
-    public  class Connection : IConnection
+    public class Connection : IConnection
     {
+        private readonly IConfiguration _configuration;
+        public Connection(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public SqlConnection GetConnection()
         {
-            return new SqlConnection("Server=KANINI-LTP-556;Database=Employee;User Id=sa;Password=Kanna@5873;Encrypt=False;TrustServerCertificate=true");
+            return new SqlConnection(_configuration.GetConnectionString("SqlConnection"));
         }
     }
 }

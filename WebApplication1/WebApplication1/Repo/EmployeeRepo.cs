@@ -11,7 +11,7 @@ namespace WebApplication1.Repo
         {
             Emp = new List<Employee>();
             Employee emp1 = new Employee(1, "kannappan");
-            Employee emp2 = new Employee(1, "rahul");
+            Employee emp2 = new Employee(2, "rahul");
             Emp.Add(emp1);
             Emp.Add(emp2);
 

@@ -11,9 +11,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IEmployeeRepo,EmployeeRepo>();
+//builder.Services.AddScoped<IEmployeeRepo,EmployeeRepo>();
 //builder.Services.AddSingleton<IEmployeeRepo, EmployeeRepo>();
-//builder.Services.AddTransient<IEmployeeRepo, EmployeeRepo>();
+builder.Services.AddTransient<IEmployeeRepo, EmployeeRepo>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeServiceAdd, EmployeeServiceAdd>();
 

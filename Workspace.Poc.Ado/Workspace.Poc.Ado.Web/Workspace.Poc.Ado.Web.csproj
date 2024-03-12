@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.27" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Workspace.Poc.Ado.DataAccess\Workspace.Poc.Ado.DataAccess.csproj" />
+    <ProjectReference Include="..\Workspace.Poc.Ado.Domain\Workspace.Poc.Ado.Domain.csproj" />
+    <ProjectReference Include="..\Workspace.Poc.Ado.Mapper\Workspace.Poc.Ado.Mapper.csproj" />
+    <ProjectReference Include="..\Workspace.Poc.Ado.Service\Workspace.Poc.Ado.Service.csproj" />
+  </ItemGroup>
+
+</Project>

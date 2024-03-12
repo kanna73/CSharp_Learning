@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Model.RequestModel
+﻿namespace Model.RequestModel
 {
-    public  class EmployeeRequest
+    public class EmployeeRequest
     {
         public int Id { get; set; }
         public string EmployeeName { get; set; }

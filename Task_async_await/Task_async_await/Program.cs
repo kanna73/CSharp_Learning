@@ -2,65 +2,35 @@
 {
     public class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            Console.WriteLine("Main thread is executing.");
+            Console.WriteLine($"Main Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+            method1();
+            method2 ();
+            Console.WriteLine("Enter the data");
+            string data = Console.ReadLine();
+            Console.WriteLine(data);
+            Console.ReadLine();
+            Console.WriteLine($"Main Thread ID: {Thread.CurrentThread.ManagedThreadId}");
 
-           /* // Start an asynchronous task
-            Task ioBoundTask = DoAsyncIOBoundWork();
 
-            // Simulate additional user input while waiting for the async task
-            for (int i = 1; i <= 5; i++)
-            {
-                Console.WriteLine($"Main thread: User input {i}");
-                await Task.Delay(1000); // Simulate user input delay
-            }
-
-            await ioBoundTask; // Wait for the asynchronous task to complete
-
-            Console.WriteLine("Main thread completed.");*/
-
-            DoSyncIOBoundWork();
-
-            // Simulate additional user input (Note: This will be processed after the synchronous task)
-            for (int i = 1; i <= 5; i++)
-            {
-                Console.WriteLine($"Main thread: User input {i}");
-                System.Threading.Thread.Sleep(1000); // Simulate user input delay
-            }
-
-            Console.WriteLine("Main thread completed.");
-        }
-        static async Task DoAsyncIOBoundWork()
-        {
-            Console.WriteLine("Async I/O-bound work started.");
-
-            // Simulate an I/O-bound operation by making an HTTP request
-            using (var httpClient = new HttpClient())
-            {
-                HttpResponseMessage response = await httpClient.GetAsync("https://www.example.com");
-                string content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Content length: " + content.Length);
-
-            }
-
-            Console.WriteLine("Async I/O-bound work completed.");
         }
 
-        static void DoSyncIOBoundWork()
+        private static  Task<int> method1()
         {
-            Console.WriteLine("Sync I/O-bound work started.");
+/*            await Task.Delay(5000);
+*/            Console.WriteLine($"async Thread ID: {Thread.CurrentThread.ManagedThreadId}");
 
-            // Simulate an I/O-bound operation by making an HTTP request synchronously
-            using (var httpClient = new HttpClient())
-            {
-                HttpResponseMessage response = httpClient.GetAsync("https://www.example.com").Result;
-                string content = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Content length: " + content.Length);
-
-            }
-
-            Console.WriteLine("Sync I/O-bound work completed.");
+            Console.WriteLine("work 1 is happening");
+            return 5;
         }
+        private static async  void method2()
+        {
+            await Task.Delay(5000);
+            Console.WriteLine($"async Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+
+            Console.WriteLine("work 2 is happening");
+        }
+
     }
 }
